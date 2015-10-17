@@ -1,0 +1,34 @@
+
+
+//import lejos.hardware.Button;
+import lejos.hardware.Button;
+import lejos.hardware.Sound;
+import lejos.robotics.subsumption.Behavior;
+
+
+public class Terminate implements Behavior {
+	private boolean suppressed = false;
+	//@Override
+	public boolean takeControl() {
+		if(Button.ESCAPE.isDown()){
+			Sound.systemSound(true, 1);
+			return true;
+		}
+		return false
+	}
+
+	//@Override
+	public void action() {
+		//Animal3.pilot.stop();
+		//Animal3.light.close();
+		//Animal3.ultra.close();
+		//Animal3.touch.close();
+		Sound.systemSound(true, 5);
+		System.exit(1);
+	}
+
+	//@Override
+	public void suppress() {
+		suppressed = true;		
+	}
+}

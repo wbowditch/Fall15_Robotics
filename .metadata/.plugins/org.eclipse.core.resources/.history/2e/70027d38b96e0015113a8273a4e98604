@@ -1,0 +1,102 @@
+import lejos.hardware.Button;
+import lejos.hardware.Sound;
+import lejos.hardware.lcd.LCD;
+import lejos.hardware.motor.Motor;
+import lejos.robotics.subsumption.Behavior;
+import lejos.utility.Delay;
+
+import java.io.File;
+import java.util.Random;
+
+public class Drive implements Behavior {
+	private int distance;
+	static double wheelDiameter = 5.6;
+	static double robotTrack = 16.7;
+	private boolean suppressed = false;
+
+	public boolean takeControl() {
+		return true;
+	}
+
+	public void suppress() {
+		suppressed = true;
+	}
+
+	public void action() {
+		suppressed = false;
+		while (!suppressed) {
+			
+			final int forward = 1;
+			final int stop = 3;
+			final int flt = 4;
+			
+			final int desiredDistance = 11;
+			final int noWall = 250;
+
+			// initialize PID constants
+			final double Kp = .95;
+			final double Ki = 0.000001;
+			final double Kd = 0.55;
+
+			// unaltered turn power
+			final int Tp = 30;
+
+			double error;
+			double accumError = 0;
+			double lastError = 0;
+			double errorDiff;
+			
+//			Part5_main.left.setSpeed(Tp);
+//			Part5_main.right.setSpeed(Tp);
+			// before wall follower starts
+			LCD.drawString("Press LEFT", 0, 2);
+			LCD.drawString("to start", 0, 3);
+			while (!Button.LEFT.isDown()) {
+				distance = Part5_main.sonicData.getSonicValue();
+				LCD.drawString(Integer.toString(distance), 0, 0);
+
+			}
+
+			// wall follower
+			LCD.drawString("Press ESCAPE", 0, 2);
+			LCD.drawString("to stop", 0, 3);
+			while (!Button.ESCAPE.isDown()) {
+//				left.forward();
+//				right.forward();
+				int distance = Part5_main.sonicData.getSonicValue();
+				LCD.drawString(Integer.toString(distance), 0, 0);
+				
+				error = distance - desiredDistance;
+				accumError += error;
+				errorDiff = error - lastError;
+				lastError = error;
+				 if (distance >= noWall){
+					 Part5_main.left.controlMotor(0, stop);
+					 Part5_main.right.controlMotor(0, stop);
+					 accumError = 0;
+					
+					 }
+				// set PID values
+				double P = Kp * error;
+				double I = Ki * accumError;
+				double D = Kd * errorDiff;
+
+				double turn = P + I + D;
+
+				int upPower = (int) (Tp + turn);
+				int downPower = (int) (Tp - turn);
+				
+				if (error > 0) {
+					Part5_main.left.controlMotor(upPower, forward);
+					Part5_main.right.controlMotor(downPower, forward);
+				} else if(error<0) {
+					//Sound.systemSound(true, 1);
+					Part5_main.right.controlMotor(downPower, forward);
+					Part5_main.left.controlMotor(upPower, forward);
+				}
+		}
+	}
+	}
+}
+
+

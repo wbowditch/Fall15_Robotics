@@ -1,0 +1,71 @@
+import lejos.hardware.Brick;
+import lejos.hardware.BrickFinder;
+import lejos.hardware.Button;
+import lejos.hardware.Sound;
+import lejos.hardware.lcd.LCD;
+import lejos.hardware.motor.Motor;
+import lejos.hardware.motor.NXTRegulatedMotor;
+import lejos.hardware.port.MotorPort;
+import lejos.hardware.port.TachoMotorPort;
+import lejos.robotics.subsumption.Behavior;
+import lejos.utility.Delay;
+
+
+
+public class No_Wall implements Behavior {
+	private int distance;
+	static double wheelDiameter = 5.6;
+	static double robotTrack = 16.7;
+	private boolean suppressed = false;
+
+	public boolean takeControl() {
+		distance = Part5_main.sonicData.getSonicValue();
+		return (distance >60);
+	}
+
+	public void suppress() {
+		suppressed = true;
+	}
+
+	public void action() {
+		suppressed = false;
+		while (!suppressed) {
+			double wheelCircunference = wheelDiameter * Math.PI;
+			Part5_main.left.close();
+			Part5_main.right.close();
+			
+			Brick brick = BrickFinder.getDefault(); 
+			NXTRegulatedMotor left1 = new NXTRegulatedMotor(brick.getPort("A"));
+			NXTRegulatedMotor right1 = new NXTRegulatedMotor(brick.getPort("B"));
+			
+			left1.stop(true);
+			right1.stop();
+			left1.rotate(150,true);
+			right1.rotate(150);
+			//Sound.systemSound(true, 3);
+			
+			int degrees=(int)Math.round((((robotTrack*Math.PI)/8)/wheelCircunference)*360.0);
+			left1.startSynchronization();
+			left1.rotate((int)(degrees+40), true);
+			right1.rotate((int)(-degrees-40));
+			left1.endSynchronization();
+			left1.waitComplete();
+			right1.waitComplete();
+			//Sound.systemSound(true, 1);
+			left1.rotate(400,true);
+			right1.rotate(400);
+			left1.waitComplete();
+			right1.waitComplete();
+
+			left1.close();
+			right1.close();
+			
+			TachoMotorPort left = (TachoMotorPort) MotorPort.A.open(TachoMotorPort.class); // right
+			TachoMotorPort right =(TachoMotorPort) MotorPort.B.open(TachoMotorPort.class);
+			
+			
+	}
+	}
+}
+
+

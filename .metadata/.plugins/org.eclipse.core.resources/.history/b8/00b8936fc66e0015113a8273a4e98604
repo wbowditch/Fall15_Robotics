@@ -1,0 +1,56 @@
+import lejos.hardware.Brick;
+import lejos.hardware.BrickFinder;
+import lejos.hardware.Button;
+import lejos.hardware.Sound;
+import lejos.hardware.lcd.LCD;
+import lejos.hardware.motor.Motor;
+import lejos.hardware.motor.NXTRegulatedMotor;
+import lejos.hardware.port.MotorPort;
+import lejos.hardware.port.TachoMotorPort;
+import lejos.robotics.subsumption.Behavior;
+import lejos.utility.Delay;
+
+
+
+public class Wall_Touch implements Behavior {
+	private int distance;
+	static double wheelDiameter = 5.6;
+	static double robotTrack = 16.7;
+	private boolean suppressed = false;
+
+	public boolean takeControl() {
+		return Part5_main.touchedData.getTouched();
+	}
+
+	public void suppress() {
+		suppressed = true;
+	}
+
+	public void action() {
+		suppressed = false;
+		LCD.drawString("Wall Touch", 0, 0);
+		Part5_main.touchedData.resetTouched();
+		Part5_main.left.stop(true);
+		Part5_main.right.stop();
+		Delay.msDelay(2000);
+		double wheelCircunference = wheelDiameter * Math.PI;
+		Part5_main.left.rotate(-150);
+		Part5_main.right.rotate(-150);
+		LCD.drawString("back up now", 0, 0);
+		int degrees=(int)Math.round((((robotTrack*Math.PI)/8)/wheelCircunference)*360.0);
+		Part5_main.left.startSynchronization();
+		Part5_main.left.rotate((int)(-degrees-40));
+		Part5_main.right.rotate((int)(degrees+40));
+		Part5_main.left.endSynchronization();
+		//Sound.systemSound(true, 4);
+		Part5_main.left.waitComplete();
+		Part5_main.right.waitComplete();
+		suppressed = true;
+		Part5_main.touchedData.resetTouched();
+		Boolean b = Part5_main.touchedData.getTouched();
+		String str3 = 
+			
+	}
+}
+
+

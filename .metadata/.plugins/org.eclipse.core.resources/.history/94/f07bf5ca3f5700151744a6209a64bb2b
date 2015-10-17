@@ -1,0 +1,19 @@
+
+import lejos.utility.Delay;
+import lejos.hardware.Brick;
+import lejos.hardware.BrickFinder;
+import lejos.hardware.Button;
+import lejos.hardware.lcd.LCD;
+import lejos.hardware.motor.EV3LargeRegulatedMotor;
+import lejos.hardware.motor.Motor;
+import lejos.hardware.motor.NXTRegulatedMotor;
+import lejos.hardware.port.SensorPort;
+import lejos.hardware.sensor.NXTUltrasonicSensor;
+public class Lab1 {
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		Button.waitForAnyPress();
+		Motor.A.setSpeed(360);
+		Motor.B.setSpeed(360);
+	}
+}
