@@ -4,4 +4,6 @@
 <fullyQualifiedTypeName name="lejos.hardware.port.SensorPort"/>
 <fullyQualifiedTypeName name="lejos.hardware.port.MotorPort"/>
 <fullyQualifiedTypeName name="lejos.hardware.Button"/>
+<fullyQualifiedTypeName name="lejos.hardware.lcd.LCD"/>
+<fullyQualifiedTypeName name="lejos.utility.Delay"/>
 </qualifiedTypeNameHistroy>
